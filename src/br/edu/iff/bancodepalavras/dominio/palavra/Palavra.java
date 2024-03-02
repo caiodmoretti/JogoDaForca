@@ -9,6 +9,7 @@ import br.edu.iff.dominio.ObjetoDominioImpl;
 public class Palavra  extends ObjetoDominioImpl  {
 
 	private Tema tema;
+	private Letra encoberta; //Precisa da implementação de LetraFactory
 	private Letra[] palavra;
 	private int tamanhoDaPalavra;
 	
