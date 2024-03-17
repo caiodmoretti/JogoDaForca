@@ -36,6 +36,7 @@ public class Palavra  extends ObjetoDominioImpl  {
 		this.tema = tema;
 		
 	}
+	
 	private void setLetras(String palavra) {
 		if(palavra == null || palavra.isBlank()) {
 			throw new NullPointerException("A palavra não pode ser nula nem vazia.");
@@ -46,23 +47,32 @@ public class Palavra  extends ObjetoDominioImpl  {
 		}
 		
 	}
+	
 	public Letra[] getLetras() {
 		Letra[] letrasTemp = Arrays.copyOf(this.palavra, this.palavra.length);
 		return letrasTemp;
 	}
-	public Letra getLetra(int posicao) {
+	public 
+	Letra getLetra(int posicao) {
 		if(posicao == 32) {
 			throw new NullPointerException("A posição da letra palavra não pode vazia.");
 		}
 		return this.palavra[posicao];
 	}
-	//Dado que devemos considerar o contexto null, qual a função de exibir?
-	public void exibir(Object contexto) {
-		
-	}
+	
 	public void exibir(Object contexto, boolean[] posicoes) {
-
+		if(this.palavra==null) {
+			throw new RuntimeException("A palavra a ser exibida não pode ser nula.");
+		}
+		for(int i = 0; i < this.getTamanho(); i++) {
+			if(posicoes[i] == true) {				
+				this.palavra[i].exibir(contexto);
+			}else {
+				this.encoberta.exibir(contexto);
+			}
+		}
 	}
+	
 	public int[] tentar(char codigo) {
 		if(this.palavra == null) {
 			throw new RuntimeException("Para tentar, a palavra deve ser inicializada.");
@@ -78,9 +88,11 @@ public class Palavra  extends ObjetoDominioImpl  {
 		}
 		return posicoesEncontrasDaLetra;
 	}
+	
 	public Tema getTema() {
 		return this.tema;
 	}
+	
 	public boolean comparar(String palavra) {
 		if(this.palavra == null) {
 			throw new RuntimeException("Para comparar, a palavra deve ser inicializada.");
@@ -95,9 +107,11 @@ public class Palavra  extends ObjetoDominioImpl  {
 		}
 		return true;
 	}
+	
 	public int getTamanho() {
 		return this.tamanhoDaPalavra;
 	}
+	
 	@Override
 	public String toString() {
 		if(this.palavra == null) {
