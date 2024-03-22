@@ -15,7 +15,7 @@ public class Tema extends ObjetoDominioImpl {
         return new Tema(id, nome);
     }
 
-    public static Tema reconstruir(long id, String nome) {
+    public static Tema reconstituir(long id, String nome) {
         return new Tema(id, nome);
     }
 
