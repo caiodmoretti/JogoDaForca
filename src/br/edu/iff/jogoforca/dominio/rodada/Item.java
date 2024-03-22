@@ -8,19 +8,19 @@ import br.edu.iff.dominio.ObjetoDominioImpl;
 
 public class Item extends ObjetoDominioImpl {
 	
-	private  boolean[] posicoesDescobertas;
+	private boolean[] posicoesDescobertas;
 	private String palavraArriscada = null;
 	private Palavra palavra;
 	private Object posicoes;
 
 
-	//Criar e reconstruir precisam da implementação da camada de persistência
+
 	static Item criar(long id, Palavra palavra) {
-		return null;
+		return new Item(id, palavra);
 		
 	}
 	public static Item reconstruir(long id, Palavra palavra, int[] posicoesDescobertas, String palavraArriscada) {
-		return null;
+		return new Item(id, palavra, posicoesDescobertas, palavraArriscada);
 		
 	}
 	

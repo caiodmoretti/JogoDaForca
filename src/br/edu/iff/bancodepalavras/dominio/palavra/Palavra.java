@@ -9,7 +9,8 @@ import br.edu.iff.dominio.ObjetoDominioImpl;
 public class Palavra  extends ObjetoDominioImpl  {
 
 	private Tema tema;
-	private Letra encoberta; //Precisa da implementação de LetraFactory
+	private LetraFactory letraFactoy;
+	private Letra encoberta;
 	private Letra[] palavra;
 	private int tamanhoDaPalavra;
 	
@@ -22,11 +23,16 @@ public class Palavra  extends ObjetoDominioImpl  {
 
 	//Criar e reconstruir precisam da implementação da camada de persistência
 	public Palavra criar(long id, String palavra , Tema tema) {
-		return null;
-
+		if(this.letraFactory==null) {
+			throw new RuntimeException("Deve inicializar o letraFactory primeiro");
+		}
+		return new Palavra(id, palavra, tema);
 	}
 	public Palavra reconstruir(long id, String palavra , Tema tema) {
-		return null;
+		if(this.letraFactory==null) {
+			throw new RuntimeException("Deve inicializar o letraFactory primeiro");
+		}
+		return new Palavra(id, palavra, tema);
 	}
 
 	private void setTema(Tema tema) {
@@ -52,8 +58,8 @@ public class Palavra  extends ObjetoDominioImpl  {
 		Letra[] letrasTemp = Arrays.copyOf(this.palavra, this.palavra.length);
 		return letrasTemp;
 	}
-	public 
-	Letra getLetra(int posicao) {
+	
+	public Letra getLetra(int posicao) {
 		if(posicao == 32) {
 			throw new NullPointerException("A posição da letra palavra não pode vazia.");
 		}

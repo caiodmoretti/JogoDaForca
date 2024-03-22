@@ -65,7 +65,7 @@ public class Rodada extends ObjetoDominioImpl {
 		ArrayList<Letra> temp = new ArrayList<>(this.letrasErradas);
 		return temp;
 	}
-	/*
+/*
 	public static void setBonecoFactory(BonecoFactory bonecoFactory) {
 		Rodada.bonecoFactory = bonecoFactory;
 	}
@@ -73,20 +73,21 @@ public class Rodada extends ObjetoDominioImpl {
 	public static BonecoFactory getBonecoFactory() {
 		return bonecoFactory;
 	}
+	*/
 	public static Rodada criar(long id, Palavra[] palavras, Jogador jogador) {
 		if(bonecoFactory==null) {
-			throw new RuntimeException("Deve inicializar o bonecoFactory antes");
+			throw new RuntimeException("O bonecoFactory deve ser inicializado antes de criar a Rodada.");
 		}
 		return new Rodada(id, palavras, jogador);
 	}
 
 	public static Rodada reconstruir(long id, Item[] itens, Letra[] erradas, Jogador jogador) {
 		if(bonecoFactory==null) {
-			throw new RuntimeException("Deve inicializar o bonecoFactory antes");
+			throw new RuntimeException("O bonecoFactory deve ser inicializado antes de reconstruir a Rodada.");
 		}
 		return new Rodada(id, itens, erradas, jogador);
 	}
-	*/
+
 	private Rodada(long id, Palavra[] palavras, Jogador jogador) {
 		super(id);
 		this.itens = new Item[palavras.length];
