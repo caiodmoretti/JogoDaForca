@@ -23,8 +23,6 @@ public class Palavra extends ObjetoDominioImpl {
 		this.setLetras(palavra);
 	}
 
-	// Criar e reconstruir precisam da implementaï¿½ï¿½o da camada de per
-	// istï¿½ncia
 	public static Palavra criar(long id, String palavra, Tema tema) {
 		if (letraFactory == null) {
 			throw new RuntimeException("Deve inicializar o letraFactory primeiro");

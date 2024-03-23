@@ -9,6 +9,7 @@ import br.edu.iff.bancodepalavras.dominio.palavra.Palavra;
 import br.edu.iff.bancodepalavras.dominio.tema.Tema;
 import br.edu.iff.dominio.ObjetoDominioImpl;
 import br.edu.iff.jogoforca.dominio.boneco.Boneco;
+import br.edu.iff.jogoforca.dominio.boneco.BonecoFactory;
 import br.edu.iff.jogoforca.dominio.jogador.Jogador;
 
 public class Rodada extends ObjetoDominioImpl {
@@ -20,14 +21,13 @@ public class Rodada extends ObjetoDominioImpl {
 	private static int pontosPorLetraEncoberta = 15;
 
 	private Jogador jogador;
-	//precisa da implementação de BonecoFactory private static BonecoFactory bonecoFactory;
+	private static BonecoFactory bonecoFactory;
 	private Boneco boneco;
 	private Item[] itens;
 	private List<Letra> letrasErradas;
 
 	public Rodada(long id) {
 		super(id);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public static int getMaxPalavras() {
@@ -65,7 +65,7 @@ public class Rodada extends ObjetoDominioImpl {
 		ArrayList<Letra> temp = new ArrayList<>(this.letrasErradas);
 		return temp;
 	}
-/*
+
 	public static void setBonecoFactory(BonecoFactory bonecoFactory) {
 		Rodada.bonecoFactory = bonecoFactory;
 	}
@@ -73,7 +73,7 @@ public class Rodada extends ObjetoDominioImpl {
 	public static BonecoFactory getBonecoFactory() {
 		return bonecoFactory;
 	}
-	*/
+
 	public static Rodada criar(long id, Palavra[] palavras, Jogador jogador) {
 		if(bonecoFactory==null) {
 			throw new RuntimeException("O bonecoFactory deve ser inicializado antes de criar a Rodada.");
