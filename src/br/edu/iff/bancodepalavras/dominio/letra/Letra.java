@@ -17,10 +17,9 @@ public abstract class Letra {
 	public char getCodigo() {
 		return this.codigo;
 	}
-	//Dado que devemos considerar o contexto null, qual a função de exibir?
+
 	public void exibir(Object contexto) {
-		System.out.println(this.getCodigo()); 
-		
+		System.out.println(this.getCodigo()); 		
 		
 	}
 	@Override

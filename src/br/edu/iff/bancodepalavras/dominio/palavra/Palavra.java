@@ -41,7 +41,7 @@ public class Palavra extends ObjetoDominioImpl {
 
 	private void setTema(Tema tema) {
 		if (tema == null) {
-			throw new NullPointerException("O Tema nï¿½o pode ser nulo.");
+			throw new NullPointerException("O Tema não pode ser nulo.");
 		}
 		this.tema = tema;
 
@@ -49,12 +49,11 @@ public class Palavra extends ObjetoDominioImpl {
 
 	private void setLetras(String palavra) {
 		if (palavra == null || palavra.isBlank()) {
-			throw new NullPointerException("A palavra nï¿½o pode ser nula nem vazia.");
+			throw new NullPointerException("A palavra não pode ser nula nem vazia.");
 		}
 		this.palavra = new Letra[this.getTamanho()];
 		for (int i = 0; i <= this.tamanhoDaPalavra - 1; i++) {
-			// Precisa da implementaï¿½ï¿½o de LetraFactory letras[i] =
-			// getLetraFactory(palavra.charAt(i));
+				this.palavra[i] = letraFactory.getLetra(palavra.charAt(i));
 		}
 
 	}
@@ -66,14 +65,14 @@ public class Palavra extends ObjetoDominioImpl {
 
 	public Letra getLetra(int posicao) {
 		if (posicao == 32) {
-			throw new NullPointerException("A posiï¿½ï¿½o da letra palavra nï¿½o pode vazia.");
+			throw new NullPointerException("A posição da letra palavra não pode vazia.");
 		}
 		return this.palavra[posicao];
 	}
 
 	public void exibir(Object contexto, boolean[] posicoes) {
 		if (this.palavra == null) {
-			throw new RuntimeException("A palavra a ser exibida nï¿½o pode ser nula.");
+			throw new RuntimeException("A palavra a ser exibida não pode ser nula.");
 		}
 		for (int i = 0; i < this.getTamanho(); i++) {
 			if (posicoes[i] == true) {
@@ -89,7 +88,7 @@ public class Palavra extends ObjetoDominioImpl {
 			throw new RuntimeException("Para tentar, a palavra deve ser inicializada.");
 		}
 		if (codigo == 32) {
-			throw new NullPointerException("O caracter nï¿½o pode ser vazio.");
+			throw new NullPointerException("O caracter não pode ser vazio.");
 		}
 		int[] posicoesEncontrasDaLetra = new int[this.tamanhoDaPalavra];
 		for (int i = 0; i <= this.getTamanho(); i++) {
