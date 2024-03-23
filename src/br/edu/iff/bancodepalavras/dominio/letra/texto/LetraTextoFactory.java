@@ -21,7 +21,7 @@ public class LetraTextoFactory extends LetraFactoryImpl {
 		this.encoberta = new LetraTexto('*');
 	}
 	
-	//97 é o valor decimal da leta 'a' na tabela ascii, 122 é z
+	//97 é o valor decimal da leta 'a' na tabela ascii, 122 é 'z'
 	@Override
 	protected Letra criarLetra(char codigo) {
 		if(codigo < 'a' || codigo > 'z') {
@@ -36,10 +36,6 @@ public class LetraTextoFactory extends LetraFactoryImpl {
 		}
 	}
 
-	@Override
-	public Letra getLetra(char codigo) {
-		return this.pool[codigo - 97];
-	}
 
 	@Override
 	public Letra getLetraEncobert() {
