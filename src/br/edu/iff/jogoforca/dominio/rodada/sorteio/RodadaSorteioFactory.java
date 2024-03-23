@@ -1,6 +1,12 @@
 package br.edu.iff.jogoforca.dominio.rodada.sorteio;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import br.edu.iff.bancodepalavras.dominio.palavra.Palavra;
 import br.edu.iff.bancodepalavras.dominio.palavra.PalavraRepository;
@@ -39,9 +45,13 @@ public class RodadaSorteioFactory extends RodadaFactoryImpl {
         if(palavrasTema.length < quantidadePalavrasSorteadas) {
         	throw new RuntimeException("Não há palavras sufucientes no tema sorteado.");
         }
+        //Sortear palavras aleatórias e garantir que novas palavras não seja repetidas       
         Palavra[] palavrasEscolhidas = new Palavra[quantidadePalavrasSorteadas];
-        for(int i = 0 ; i <= palavrasEscolhidas.length-1; i++) {
-        	palavrasEscolhidas[i] = palavrasTema[random.nextInt(palavrasTema.length-1)];
+        Set<Palavra> conjuntoPalavras = new HashSet<>(Arrays.asList(palavrasEscolhidas));
+		List<Palavra> listaTemporaria = new ArrayList<>(conjuntoPalavras);
+        Collections.shuffle(listaTemporaria);
+        for (int i = 0; i <= palavrasEscolhidas.length-1 && i < listaTemporaria.size() ; i++) {
+            palavrasEscolhidas[i] = listaTemporaria.get(i);
         }
 		return Rodada.criar(this.getRodadaRepository().getProximoId(), palavrasEscolhidas, jogador);		
 	}
