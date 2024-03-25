@@ -116,12 +116,13 @@ public class Aplicacao {
 	}
 	
 	public RodadaFactory getRodadaFactory() {
-		if(this.tipoRodadaFactory.compareTo(TIPOS_RODADA_FACTORY[0])==0) {
+		if (this.tipoRodadaFactory.compareTo(TIPOS_RODADA_FACTORY[0]) == 0) {
 			return RodadaSorteioFactory.getSoleInstance();
-		}else {
-			throw new RuntimeException("Tipo de factory não existente.");
+		} else {
+			throw new RuntimeException("Tipo de factory não existe.");
 		}
 	}
+
 	
 	public TemaFactory getTemaFactory() {
 		return TemaFactoryImpl.getSoleInstance();
