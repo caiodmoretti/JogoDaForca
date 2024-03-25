@@ -11,6 +11,9 @@ public abstract class RodadaFactoryImpl extends EntityFactory {
 
 	protected RodadaFactoryImpl(RodadaRepository repository, TemaRepository temaRepository, PalavraRepository palavraRepository) {
 		super(repository);
+		if(temaRepository == null || palavraRepository == null) {
+			throw new RuntimeException("Nenhum parâmetro pode ser nulo.");
+		}
 		this.temaRepository = temaRepository;
 		this.palavraRepository = palavraRepository;
 	}
