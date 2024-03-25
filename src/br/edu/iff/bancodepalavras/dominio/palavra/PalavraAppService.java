@@ -2,6 +2,7 @@ package br.edu.iff.bancodepalavras.dominio.palavra;
 
 import br.edu.iff.bancodepalavras.dominio.tema.Tema;
 import br.edu.iff.bancodepalavras.dominio.tema.TemaRepository;
+import br.edu.iff.repository.RepositoryException;
 
 public class PalavraAppService {
 
@@ -30,29 +31,22 @@ public class PalavraAppService {
         return soleInstance;
     }
 
-    // pré-condição: idTema tem que ser de um Tema pré-existente no repositório de
-    // Tema.
-    // novaPalavra():
-    // verifica se a palavra (string) existe no repositório. Se exisitir não faz
-    // nada e retorna true. Se não
-    // existir, acessa o repositório de Tema para obter o Tema a partir de idTema,
-    // cria a palavra e insere a
-    // palavra no repositório. Retorna true se a palavra foi inserida com sucesso no
-    // repositório ou false se
-    // houve alguma RepositoryException.
-    // public boolean novaPalavra(String palavra, long idTema){
-    // Tema t = temaRepository.getPorId(idTema);
-    // if(t == null){
-    // throw new IllegalArgumentException();
-    // }
-    // Palavra p = palavraFactory.getPalavra(palavra, t);
-    // if(this.palavraRepository.getPalavra(palavra)!=null) {
-    // return true;
-    // } else {
-    // Palavra p = palavraFactory.getPalavra(palavra, t);
-    // boolean sucesso = palavraRepository.inserir(p);
+    public boolean novaPalavra(String palavra, long idTema) {
+        Tema tema = temaRepository.getPorId(idTema);
+        if (tema == null) {
+            throw new IllegalArgumentException("Tema precisa ser pré-existente");
+        }
 
-    // }
-
-    // }
+        if (palavraFactory.getPalavra(palavra, tema) != null) {
+            return true;
+        } else {
+            try {
+                palavraRepository.inserir(Palavra.criar(palavraRepository.getProximoId(), palavra, tema));
+                return true;
+            } catch (RepositoryException e) {
+                System.out.println("Não foi possível inserir nova palavra!");
+                return false;
+            }
+        }
+    }
 }
