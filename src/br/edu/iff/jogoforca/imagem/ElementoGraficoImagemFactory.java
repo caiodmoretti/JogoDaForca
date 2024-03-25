@@ -11,7 +11,7 @@ public class ElementoGraficoImagemFactory implements ElementoGraficoFactory   {
 
 	private static ElementoGraficoImagemFactory soleInstance;
 	
-	public ElementoGraficoImagemFactory getSoleInstance() {
+	public static ElementoGraficoImagemFactory getSoleInstance() {
 		if(soleInstance == null) {
 			soleInstance = new ElementoGraficoImagemFactory();
 			return soleInstance;

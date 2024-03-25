@@ -23,6 +23,15 @@ public class Palavra extends ObjetoDominioImpl {
 		this.setLetras(palavra);
 	}
 
+	
+	public static void setLetraFactory(LetraFactory factory) {
+		letraFactory = factory;
+	}
+	
+	public LetraFactory getLetraFactory() {
+		return letraFactory;
+	}
+	
 	public static Palavra criar(long id, String palavra, Tema tema) {
 		if (letraFactory == null) {
 			throw new RuntimeException("Deve inicializar o letraFactory primeiro");
