@@ -225,7 +225,7 @@ public class Rodada extends ObjetoDominioImpl {
 			for(Item item : this.itens) {
 				pontosTotaisPorLetrasEncobertas += item.calcularPontosLetrasEncobertas(pontosPorLetraEncoberta);
 			}
-			return pontosQuandoDescobreTodasAsPalavras + pontosTotaisPorLetrasEncobertas;
+			return (pontosQuandoDescobreTodasAsPalavras * this.itens.length)+ pontosTotaisPorLetrasEncobertas;
 		}else {
 			return 0;
 		}
