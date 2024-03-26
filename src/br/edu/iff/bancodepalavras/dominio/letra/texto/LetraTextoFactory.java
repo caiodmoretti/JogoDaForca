@@ -38,7 +38,7 @@ public class LetraTextoFactory extends LetraFactoryImpl {
 
 
 	@Override
-	public Letra getLetraEncobert() {
+	public Letra getLetraEncoberta() {
 		return this.encoberta;
 	}
 

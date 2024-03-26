@@ -1,12 +1,8 @@
 package br.edu.iff.jogoforca.dominio.rodada.sorteio;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import br.edu.iff.bancodepalavras.dominio.palavra.Palavra;
 import br.edu.iff.bancodepalavras.dominio.palavra.PalavraRepository;
@@ -18,42 +14,44 @@ import br.edu.iff.jogoforca.dominio.rodada.RodadaFactoryImpl;
 import br.edu.iff.jogoforca.dominio.rodada.RodadaRepository;
 
 public class RodadaSorteioFactory extends RodadaFactoryImpl {
-	
-	private static RodadaSorteioFactory soleInstance;
-	
-	public static void createSoleInstance(RodadaRepository repository, TemaRepository temaRepository, PalavraRepository palavraRepository) {
-		if(soleInstance==null) {
-			soleInstance = new RodadaSorteioFactory(repository, temaRepository, palavraRepository);
-		}
-	}
-	
-	public static RodadaSorteioFactory getSoleInstance() {
-		if(soleInstance==null) {
-			throw new RuntimeException("É necessário chamar o método createSoleInstance primeiro.");
-		}
-		return soleInstance;
-	}
-		private RodadaSorteioFactory(RodadaRepository repository, TemaRepository temaRepository, PalavraRepository palavraRepository) {
-			super(repository, temaRepository, palavraRepository);
-		}
-		
-	public Rodada getRodada(Jogador jogador) {
-		Random random = new Random();
-		Tema temaEscolhido = this.getTemaRepository().getTodos()[random.nextInt(this.getTemaRepository().getTodos().length-1)];
-		int quantidadePalavrasSorteadas =  random.nextInt(3) + 1; // nextInt(3) gera números entre 0 (inclusive) e 3 (exclusivo). 
-		Palavra[] palavrasTema = this.getPalavraRepository().getPorTema(temaEscolhido);
-        if(palavrasTema.length < quantidadePalavrasSorteadas) {
-        	throw new RuntimeException("Não há palavras sufucientes no tema sorteado.");
-        }
-        //Sortear palavras aleatórias e garantir que novas palavras não seja repetidas       
-        Palavra[] palavrasEscolhidas = new Palavra[quantidadePalavrasSorteadas];
-        Set<Palavra> conjuntoPalavras = new HashSet<>(Arrays.asList(palavrasEscolhidas));
-		List<Palavra> listaTemporaria = new ArrayList<>(conjuntoPalavras);
-        Collections.shuffle(listaTemporaria);
-        for (int i = 0; i <= palavrasEscolhidas.length-1 && i < listaTemporaria.size() ; i++) {
-            palavrasEscolhidas[i] = listaTemporaria.get(i);
-        }
-		return Rodada.criar(this.getRodadaRepository().getProximoId(), palavrasEscolhidas, jogador);		
-	}
 
+	    private static RodadaSorteioFactory soleInstance;
+	
+	    public static void createSoleInstance(RodadaRepository rodadaRepository, TemaRepository temaRepository, PalavraRepository palavraRepository) {
+	        if (soleInstance == null) {
+	            soleInstance = new RodadaSorteioFactory(rodadaRepository, temaRepository, palavraRepository);
+	        }
+	    }
+	   
+	    public static RodadaSorteioFactory getSoleInstance() {
+	        return soleInstance;
+	    }
+	   
+	    private RodadaSorteioFactory(RodadaRepository rodadaRepository, TemaRepository temaRepository, PalavraRepository palavraRepository) {
+	        super(rodadaRepository, temaRepository, palavraRepository);
+	    }
+
+	    @Override
+	    public Rodada getRodada(Jogador jogador) {
+	    	
+	        Random rodadaAleatoria = new Random();
+	        int quantidadePalavras = rodadaAleatoria.nextInt(3)+1;
+	        
+	        Tema[] temas = getTemaRepository().getTodos();
+	        int posicao = rodadaAleatoria.nextInt(temas.length);
+	
+	        Tema tema = temas[posicao];
+	        
+	        Palavra[] palavrasDoTema = getPalavraRepository().getPorTema(tema);
+	        
+	        
+	        List<Palavra> palavras = new ArrayList<>();
+	        for (int i = 0; i < quantidadePalavras; i++){	
+	        	palavras.add(i, (Palavra) palavrasDoTema[rodadaAleatoria.nextInt(temas.length - 1)]);
+	        }
+
+	        long id = getRodadaRepository().getProximoId();
+	        return Rodada.Criar(id,palavras.toArray(palavras.toArray(new Palavra[0])), jogador);
+	    }
+	    
 }

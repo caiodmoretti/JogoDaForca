@@ -13,7 +13,7 @@ public abstract class LetraFactoryImpl implements LetraFactory  {
 		return this.criarLetra(codigo);
 	};
 	//Template Method
-	public final Letra getLetraEncoberta() {
+	public  Letra getLetraEncoberta() {
 		return this.encoberta;
 	}
 	//Factory Method

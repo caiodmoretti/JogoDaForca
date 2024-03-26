@@ -28,7 +28,7 @@ public class LetraImagemFactory extends LetraFactoryImpl {
 	}
 
 	@Override
-	public Letra getLetraEncobert() {
+	public Letra getLetraEncoberta() {
 
 		return null;
 	}

@@ -31,8 +31,8 @@ public class ElementoGraficoImagemFactory implements ElementoGraficoFactory   {
 	}
 
 	@Override
-	public Letra getLetraEncobert() {
-		return LetraImagemFactory.getSoleInstace().getLetraEncobert();
+	public Letra getLetraEncoberta() {
+		return LetraImagemFactory.getSoleInstace().getLetraEncoberta();
 	}
 
 }

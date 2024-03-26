@@ -1,129 +1,123 @@
 package br.edu.iff.jogoforca.dominio.rodada;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import br.edu.iff.bancodepalavras.dominio.letra.Letra;
-import br.edu.iff.bancodepalavras.dominio.palavra.Palavra;
-import br.edu.iff.dominio.ObjetoDominioImpl;
+import  br.edu.iff.bancodepalavras.dominio.letra.Letra;
+import  br.edu.iff.bancodepalavras.dominio.palavra.Palavra;
+import  br.edu.iff.dominio.ObjetoDominioImpl;
 
-public class Item extends ObjetoDominioImpl {
-	
-	private boolean[] posicoesDescobertas;
-	private String palavraArriscada = null;
-	private Palavra palavra;
-	private Object posicoes;
+public class Item extends ObjetoDominioImpl{
+		private boolean[] posicoesDescobertas;
+		private String palavraArriscada = null;
+		public Palavra palavra;
 
-
-
-	static Item criar(long id, Palavra palavra) {
-		return new Item(id, palavra);
 		
-	}
-	public static Item reconstruir(long id, Palavra palavra, int[] posicoesDescobertas, String palavraArriscada) {
-		return new Item(id, palavra, posicoesDescobertas, palavraArriscada);
+		private Item(long id, Palavra palavra){
+			super(id);
+			this.palavra = palavra;
+			this.posicoesDescobertas = new boolean[palavra.getTamanho()];
+		}
 		
-	}
-	
-	private Item(long id, Palavra palavra) {
-		super(id);
-		this.setPalavra(palavra);
-	}
-	private Item(long id, Palavra palavra, int[] posicoesDescobertas, String palavraArriscada) {
-		super(id);
-		this.setPalavra(palavra);
-		this.setPosicoesDescobertas(posicoesDescobertas); 
-		this.setPalavraArriscada(palavraArriscada);
-	}
-	
-	private void setPalavra(Palavra palavra) {
-		if(palavra == null) {
-			throw new NullPointerException("A palavra não pode ser nula");
-		}
-		this.palavra = palavra;
-	}
-	
-	private void setPosicoesDescobertas(int[] posicoesDescobertasInt) {
-		if(posicoesDescobertasInt == null) {
-			throw new NullPointerException("O vetor com as posições descobertas é nulo");
-		}
-		for(int i = 0; i <= posicoesDescobertasInt.length-1 ; i++) {
-			this.posicoesDescobertas[posicoesDescobertasInt[i]] = true;
-		}
-	}
-		
-	private void setPalavraArriscada(String palavraArriscada) {
-		if(palavraArriscada == null) {
-			throw new NullPointerException("A palavra arriscada não pode ser nula");
-		}
-		this.palavraArriscada = palavraArriscada;
-		
-	}
-	public Palavra getPalavra() {
-		return this.palavra;
-	}
-	public Letra[] getLetrasDescobertas() {
-		ArrayList<Letra> letrasDescobertasLista = new ArrayList<Letra>();
-		for(int i = 0; i <= this.palavra.getTamanho(); i++) {
-			if(this.posicoesDescobertas[i] == true) {
-				letrasDescobertasLista.add(this.palavra.getLetra(i));
+		private Item(long id, Palavra palavra, int[] posicoesDescobertas, String palavraArriscada){
+			super(id);
+			this.palavra = palavra;
+			this.palavraArriscada = palavraArriscada;
+			for (int i = 0; i < posicoesDescobertas.length; i++ )
+			{
+				this.posicoesDescobertas[posicoesDescobertas[i]] = true;
 			}
 		}
-		return letrasDescobertasLista.toArray(new Letra[letrasDescobertasLista.size()]);
-	}
 	
-	public int getLetrasEncobertas() {
-		int quantidade = 0;
-		for(int i = 0; i <= this.palavra.getTamanho(); i++) {
-			if(this.posicoesDescobertas[i] == false) {
-				quantidade++;
-			}
+		static Item criar(long id, Palavra palavra){
+			return new Item(id, palavra);
 		}
-		return quantidade;
-	}
-	
-	public int calcularPontosLetrasEncobertas(int valorPorLetraEncoberta) {
-		return this.getLetrasEncobertas() * valorPorLetraEncoberta;
-	}
-	
-	public boolean descobriu() {
-		return this.acertou() || (this.getLetrasEncobertas() == 0);
-	}
-	
-	public boolean acertou() {
-		return this.palavra.comparar(this.palavraArriscada);
-	}	
-	public void exibir(Object contexto) {
-		this.palavra.exibir(palavra, this.posicoesDescobertas);
 		
-	}
-	boolean tentar(char codigo) {
-		int[] posicoes = palavra.tentar(codigo);
-        for (int i = 0; i <= palavra.tentar(codigo).length-1; i++ ) {
-        	if(posicoes[i] == 1) {
-                this.posicoesDescobertas[i] = true;      		
-        	}
+		public static Item reconstituir(long id, Palavra palavra, int[] posicoesDescobertas, String palavraArriscada){
+			return new Item(id, palavra, posicoesDescobertas, palavraArriscada);
+		}
 
-        }
-		if(posicoes.length > 0) {
-			return true;
+		public Palavra getPalavra(){
+			return this.palavra;
 		}
-		else {
-			return false;
-		}
-	}
-	public boolean arriscou() {
-		if(this.palavraArriscada == null) {
-			return false;
-		}
-		else {
-			return true;
-		}
-	}
-	public boolean[] getPosicoesDescobertas() {
-		boolean[] temp = new boolean[posicoesDescobertas.length];
-		System.arraycopy(posicoesDescobertas, 0, temp, 0, posicoesDescobertas.length);
-		return temp;
-	}
+		
+		 public Letra[] getLetrasDescobertas(){
+		       List<Letra> listaLetras = new ArrayList<>();
+	
+		        for (int i = 0; i < posicoesDescobertas.length; i++) {
+		            if(this.posicoesDescobertas[i]){
+		                listaLetras.add(palavra.getLetra(i));
+		            }
+		        }
+		        return  listaLetras.toArray(new Letra[listaLetras.size()] );
+	
+		 }
 
+		 public Letra[] getLetrasEncobertas(){
+			 List<Letra> listaLetras = new ArrayList<>();
+			 
+			 for (int i = 0; i < posicoesDescobertas.length; i++) {
+				 if(!posicoesDescobertas[i]){
+					 listaLetras.add(palavra.getLetra(i));
+		            }
+		        }
+		        return listaLetras.toArray(new Letra[listaLetras.size()]);
+		    }
+		 
+		 public int quantidadeLetrasEncobertas(){
+			 int qtd = 0;
+			 for (int i = 0; i < posicoesDescobertas.length; i++) {
+				 if(!posicoesDescobertas[i]){
+					 qtd++;
+		            }
+		        }
+			 return qtd;
+		 }
+		 
+		 
+		 public int calcularPontosLetrasEncobertas(int valorPorLetraEncoberta){
+		      return this.quantidadeLetrasEncobertas() * valorPorLetraEncoberta;
+		 }
+		 
+		 
+		 public boolean descobriu() {
+		     return acertou() || quantidadeLetrasEncobertas() == 0;
+		 }
+	
+		public void exibir(Object contexto){
+			 palavra.exibir(contexto, this.posicoesDescobertas);
+		 }
+		 
+	    boolean tentar(char codigo){
+	    	
+	    	//a funcao de tentar de palavra retorn um array de posicoes acertadas, se vazio retorna false
+	        if (palavra.tentar(codigo).length == 0) {
+	        	return false;
+	        } 
+	        
+	        // ao verificar que palavra.tentar tem correspondencia, define a posicao acertada como true no vetor posicoesDescobertas;
+	        int[] posicoes = palavra.tentar(codigo);
+	        for (int i = 0; i < posicoes.length; i++) {
+	            this.posicoesDescobertas[posicoes[i]] = true;
+	        }
+
+	        return true;
+	    }
+	    
+	    void arriscar(String palavra){
+	      	this.palavraArriscada = palavra;
+	    }
+
+	    public String getPalavraArriscada(){
+	        return palavraArriscada;
+	    }
+	
+	    public boolean arriscou(){
+	        return palavraArriscada != null;
+	    }
+	
+	    public boolean acertou(){
+	    	
+	        return palavra.toString().equals(palavraArriscada);
+	    }
 }
-
