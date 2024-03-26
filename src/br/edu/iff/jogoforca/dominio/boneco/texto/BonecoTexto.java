@@ -54,7 +54,7 @@ public class BonecoTexto implements Boneco {
 			System.out.println("cabeça, olho esquerdo, olho direito, nariz, boca, tronco, braço esquerdo, braço direito, perna esquerda, perna direita");
 			break;
 		default:
-			throw new RuntimeException("Valor invádio passado para exibir o boneco");
+			throw new RuntimeException("Valor invádio passado paa exibir o boneco");
 		}
 	}
 }

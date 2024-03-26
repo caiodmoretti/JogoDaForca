@@ -5,18 +5,14 @@ import br.edu.iff.bancodepalavras.dominio.palavra.Palavra;
 import br.edu.iff.bancodepalavras.dominio.palavra.PalavraAppService;
 import br.edu.iff.bancodepalavras.dominio.palavra.PalavraFactory;
 import br.edu.iff.bancodepalavras.dominio.palavra.PalavraFactoryImpl;
-import br.edu.iff.bancodepalavras.dominio.palavra.PalavraRepository;
 import br.edu.iff.bancodepalavras.dominio.tema.TemaFactory;
 import br.edu.iff.bancodepalavras.dominio.tema.TemaFactoryImpl;
-import br.edu.iff.bancodepalavras.dominio.tema.TemaRepository;
 import br.edu.iff.jogoforca.dominio.boneco.BonecoFactory;
 import br.edu.iff.jogoforca.dominio.jogador.JogadorFactory;
 import br.edu.iff.jogoforca.dominio.jogador.JogadorFactoryImpl;
-import br.edu.iff.jogoforca.dominio.jogador.JogadorRepository;
 import br.edu.iff.jogoforca.dominio.rodada.Rodada;
 import br.edu.iff.jogoforca.dominio.rodada.RodadaAppService;
 import br.edu.iff.jogoforca.dominio.rodada.RodadaFactory;
-import br.edu.iff.jogoforca.dominio.rodada.RodadaRepository;
 import br.edu.iff.jogoforca.dominio.rodada.sorteio.RodadaSorteioFactory;
 import br.edu.iff.jogoforca.embdr.BDRRepositoryFactory;
 import br.edu.iff.jogoforca.emmemoria.MemoriaRepositoryFactory;
@@ -25,120 +21,113 @@ import br.edu.iff.jogoforca.texto.ElementoGraficoTextoFactory;
 
 public class Aplicacao {
 
-	private static final String[] TIPOS_REPOSITORY_FACTORY = { "memoria", "relacional" };
-	private static final String[] TIPOS_ELEMENTO_GRAFICO_FACTORY = { "texto", "imagem" };
-	private static final String[] TIPOS_RODADA_FACTORY = { "sorteio" };
+	private static final String[] TIPOS_REPOSITORY_FACTORY = {"memoria, relacional"};
+	private static final String[] TIPOS_ELEMENTO_GRAFICO_FACTORY = {"texto", "imagem"};
+	private static final String[] TIPOS_RODADA_FACTORY = {"sorteio"};
+	private static Aplicacao soleInstance;
+	
 	private String tipoRepositoryFactory = TIPOS_REPOSITORY_FACTORY[0];
 	private String tipoElementoGraficoFactory = TIPOS_ELEMENTO_GRAFICO_FACTORY[0];
 	private String tipoRodadaFactory = TIPOS_RODADA_FACTORY[0];
-
-	private static Aplicacao soleInstance;
-
+	
 	public static Aplicacao getSoleInstance() {
-		if (Aplicacao.soleInstance == null) {
-			return Aplicacao.soleInstance = new Aplicacao();
+		if(soleInstance==null) {
+			soleInstance = new Aplicacao();
 		}
-		return Aplicacao.soleInstance;
+		return soleInstance;
 	}
-
+	
 	private Aplicacao() {
-
+		
 	}
-
+	
 	public void configurar() {
-		RepositoryFactory repositoryFactory = getRepositoryFactory();
-
-		TemaRepository temaRepository = repositoryFactory.getTemaRepository();
-		RodadaRepository rodadaRepository = repositoryFactory.getRodadaRepository();
-		PalavraRepository palavraRepository = repositoryFactory.getPalavraRepository();
-		JogadorRepository jogadorRepository = repositoryFactory.getJogadorRepository();
-
-		TemaFactoryImpl.createSoleInstance(temaRepository);
-		PalavraFactoryImpl.createSoleInstance(palavraRepository);
-		JogadorFactoryImpl.createSoleInstance(jogadorRepository);
-		RodadaSorteioFactory.createSoleInstance(rodadaRepository, temaRepository, palavraRepository);
-
-		RodadaFactory rodadaFactory = getRodadaFactory();
-		PalavraAppService.createSoleInstance(temaRepository, palavraRepository, getPalavraFactory());
-		RodadaAppService.createSoleInstance(rodadaFactory, rodadaRepository, jogadorRepository);
-
-		Palavra.setLetraFactory(getLetraFactory());
-		Rodada.setBonecoFactory(getBonecoFactory());
+		RodadaSorteioFactory.createSoleInstance(this.getRepositoryFactory().getRodadaRepository(), this.getRepositoryFactory().getTemaRepository(), this.getRepositoryFactory().getPalavraRepository());
+		TemaFactoryImpl.createSoleInstance(this.getRepositoryFactory().getTemaRepository());
+		PalavraFactoryImpl.createSoleInstance(this.getRepositoryFactory().getPalavraRepository());
+		JogadorFactoryImpl.createSoleInstance(this.getRepositoryFactory().getJogadorRepository());
+		
+		Palavra.setLetraFactory(this.getLetraFactory());
+		Rodada.setBonecoFactory(this.getBonecoFactory());
+		
+		PalavraAppService.createSoleInstance(this.getRepositoryFactory().getPalavraRepository(), this.getRepositoryFactory().getTemaRepository(), this.getPalavraFactory());
+		RodadaAppService.createSoleInstance(this.getRepositoryFactory().getRodadaRepository(), this.getRepositoryFactory().getJogadorRepository(), this.getRodadaFactory());
+		
 	}
-
+	
 	public String[] getTiposRepositoryFactory() {
 		return TIPOS_REPOSITORY_FACTORY;
 	}
-
+	
 	public void setTipoRepositoryFactory(String tipo) {
 		this.tipoRepositoryFactory = tipo;
+		this.configurar();
 	}
-
+	
 	public RepositoryFactory getRepositoryFactory() {
-		switch (tipoRepositoryFactory) {
-			case "memoria":
-				return MemoriaRepositoryFactory.getSoleInstance();
-			case "relacional":
-				return BDRRepositoryFactory.getSoleInstance();
-			default:
-				throw new IllegalStateException("tipoRepositoryFactory não possui um valor válido");
+		if(this.tipoRepositoryFactory.compareTo(TIPOS_REPOSITORY_FACTORY[0])==0) {	
+			return MemoriaRepositoryFactory.getSoleInstance();
+		}else if(this.tipoRepositoryFactory.compareTo(TIPOS_REPOSITORY_FACTORY[1])==0){
+			return BDRRepositoryFactory.getSoleInstance();
+		}else {
+			throw new RuntimeException("Tipo de factory n�o existente.");
 		}
 	}
-
+	
 	public String[] getTiposElementoGraficoFactory() {
 		return TIPOS_ELEMENTO_GRAFICO_FACTORY;
 	}
-
+	
 	public void setTipoElementoGraficoFactory(String tipo) {
 		this.tipoElementoGraficoFactory = tipo;
 		this.configurar();
 	}
-
+	
 	private ElementoGraficoFactory getElementoGraficoFactory() {
-		switch (tipoElementoGraficoFactory) {
-			case "texto":
-				return ElementoGraficoTextoFactory.getSoleInstance();
-			case "imagem":
-				return ElementoGraficoImagemFactory.getSoleInstance();
-			default:
-				throw new IllegalStateException("tipoElementoGraficoFactory não possui um valor válido");
+		if(this.tipoElementoGraficoFactory.compareTo(TIPOS_ELEMENTO_GRAFICO_FACTORY[0])==0) {
+			return ElementoGraficoTextoFactory.getSoleInstance();
+		}else if(this.tipoElementoGraficoFactory.compareTo(TIPOS_ELEMENTO_GRAFICO_FACTORY[1])==0){
+			return ElementoGraficoImagemFactory.getSoleInstance();
+		}else {
+			throw new RuntimeException("Tipo de factory n�o existente.");
 		}
 	}
-
+	
 	public BonecoFactory getBonecoFactory() {
 		return this.getElementoGraficoFactory();
 	}
-
+	
 	public LetraFactory getLetraFactory() {
 		return this.getElementoGraficoFactory();
 	}
-
+	
 	public String[] getTiposRodadaFactory() {
 		return TIPOS_RODADA_FACTORY;
 	}
-
+	
 	public void setTipoRodadaFactory(String tipo) {
 		this.tipoRodadaFactory = tipo;
 		this.configurar();
 	}
-
+	
 	public RodadaFactory getRodadaFactory() {
-		if (tipoRodadaFactory.equals("sorteio")) {
+		if(this.tipoRodadaFactory.compareTo(TIPOS_RODADA_FACTORY[0])==0) {
 			return RodadaSorteioFactory.getSoleInstance();
+		}else {
+			throw new RuntimeException("Tipo de factory n�o existente.");
 		}
-		throw new IllegalStateException("tipoRodadaFactory não possui um valor válido");
 	}
-
+	
 	public TemaFactory getTemaFactory() {
 		return TemaFactoryImpl.getSoleInstance();
 	}
-
+	
 	public PalavraFactory getPalavraFactory() {
 		return PalavraFactoryImpl.getSoleInstance();
 	}
-
+	
 	public JogadorFactory getJogadorFactory() {
 		return JogadorFactoryImpl.getSoleInstance();
 	}
-
+	
 }

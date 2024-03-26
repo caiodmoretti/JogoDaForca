@@ -8,4 +8,9 @@ public class LetraImagem extends Letra {
 		super(codigo);
 	}
 
+	@Override
+	public void exibir(Object contexto) {
+		//não precisa implementar exibir(), basta deixar os métodos vazios
+	}
+	
 }

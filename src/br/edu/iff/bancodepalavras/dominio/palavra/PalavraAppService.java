@@ -5,48 +5,46 @@ import br.edu.iff.repository.RepositoryException;
 
 public class PalavraAppService {
 
-    private static PalavraAppService soleInstance;
-
-    /* private */ PalavraRepository palavraRepository;
-    TemaRepository temaRepository;
-    PalavraFactory palavraFactory;
-
-    private PalavraAppService(TemaRepository temaRepository, PalavraRepository palavraRepository,
-            PalavraFactory palavraFactory) {
-        this.temaRepository = temaRepository;
-        this.palavraRepository = palavraRepository;
-        this.palavraFactory = palavraFactory;
-    }
-
-    public static void createSoleInstance(TemaRepository temaRepository, PalavraRepository palavraRepository,
-            PalavraFactory palavraFactory) {
-        if (soleInstance == null) {
-            soleInstance = new PalavraAppService(temaRepository, palavraRepository, palavraFactory);
-        }
-    }
-
-    public static PalavraAppService getSoleInstance() {
-        if (soleInstance == null) {
-            throw new IllegalStateException();
-        }
-        return soleInstance;
-    }
-
-    public boolean novaPalavra(String palavra, long idTema) {
-        if (temaRepository.getPorId(idTema) == null) {
-            throw new IllegalArgumentException("Tema precisa ser prÃ©-existente");
-        }
-
-        if (palavraRepository.getPalavra(palavra) != null) {
-            return true;
-        } else {
-            try {
-                palavraRepository.inserir(palavraFactory.getPalavra(palavra, temaRepository.getPorId(idTema)));
-                return true;
-            } catch (RepositoryException e) {
-                System.out.println("NÃ£o foi possÃ­vel inserir nova palavra!");
-                return false;
-            }
-        }
-    }
+	private PalavraRepository palavraRepository;
+	private TemaRepository temaRepository;
+	private PalavraFactory palavraFactory;
+	
+	private static PalavraAppService soleInstance;
+	
+	public static void createSoleInstance(PalavraRepository palavraRepository, TemaRepository temaRepository, PalavraFactory palavraFactory) {
+		if(soleInstance==null) {
+			soleInstance = new PalavraAppService(palavraRepository, temaRepository, palavraFactory);
+		}
+	}
+	
+	public static PalavraAppService getSoleInstance() {
+		if(soleInstance==null) {
+			throw new RuntimeException("Precisa chamar o createSoleInstance primeiro.");
+		}
+		return soleInstance;
+	}
+	
+	private PalavraAppService(PalavraRepository palavraRepository, TemaRepository temaRepository, PalavraFactory palavraFactory) {
+		this.palavraRepository = palavraRepository;
+		this.temaRepository = temaRepository;
+		this.palavraFactory = palavraFactory;
+	}
+	
+	public boolean novaPalavra(String palavra, long idTema) {
+		if(this.temaRepository.getPorId(idTema)==null) {
+			throw new RuntimeException("O idTema tem que ser de um Tema pré-existente no repositório de Tema.");
+		}
+		if(this.palavraRepository.getPalavra(palavra)!=null) {
+			return true;
+		}else {
+			try {
+				this.palavraRepository.inserir(this.palavraFactory.getPalavra(palavra, this.temaRepository.getPorId(idTema)));
+				return true;
+			}catch(RepositoryException e) {
+				System.out.println(e.getMessage());
+				return false;
+			}
+		}
+	}
+	
 }

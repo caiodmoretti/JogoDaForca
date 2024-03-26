@@ -1,7 +1,6 @@
 package br.edu.iff.jogoforca.dominio.rodada.sorteio;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Random;
 
 import br.edu.iff.bancodepalavras.dominio.palavra.Palavra;
@@ -13,45 +12,49 @@ import br.edu.iff.jogoforca.dominio.rodada.Rodada;
 import br.edu.iff.jogoforca.dominio.rodada.RodadaFactoryImpl;
 import br.edu.iff.jogoforca.dominio.rodada.RodadaRepository;
 
+
+
 public class RodadaSorteioFactory extends RodadaFactoryImpl {
 
-	    private static RodadaSorteioFactory soleInstance;
+	private static RodadaSorteioFactory soleInstance;
 	
-	    public static void createSoleInstance(RodadaRepository rodadaRepository, TemaRepository temaRepository, PalavraRepository palavraRepository) {
-	        if (soleInstance == null) {
-	            soleInstance = new RodadaSorteioFactory(rodadaRepository, temaRepository, palavraRepository);
-	        }
-	    }
-	   
-	    public static RodadaSorteioFactory getSoleInstance() {
-	        return soleInstance;
-	    }
-	   
-	    private RodadaSorteioFactory(RodadaRepository rodadaRepository, TemaRepository temaRepository, PalavraRepository palavraRepository) {
-	        super(rodadaRepository, temaRepository, palavraRepository);
-	    }
-
-	    @Override
-	    public Rodada getRodada(Jogador jogador) {
-	    	
-	        Random rodadaAleatoria = new Random();
-	        int quantidadePalavras = rodadaAleatoria.nextInt(3)+1;
-	        
-	        Tema[] temas = getTemaRepository().getTodos();
-	        int posicao = rodadaAleatoria.nextInt(temas.length);
+	public static void createSoleInstance(RodadaRepository repository, TemaRepository temaRepository, PalavraRepository palavraRepository) {
+		if(soleInstance==null) {
+			soleInstance = new RodadaSorteioFactory(repository, temaRepository, palavraRepository);
+		}
+	}
 	
-	        Tema tema = temas[posicao];
-	        
-	        Palavra[] palavrasDoTema = getPalavraRepository().getPorTema(tema);
-	        
-	        
-	        List<Palavra> palavras = new ArrayList<>();
-	        for (int i = 0; i < quantidadePalavras; i++){	
-	        	palavras.add(i, (Palavra) palavrasDoTema[rodadaAleatoria.nextInt(temas.length - 1)]);
-	        }
+	public static RodadaSorteioFactory getSoleInstance() {
+		if(soleInstance==null) {
+			throw new RuntimeException("Precisa chamar o createSoleInstance primeiro.");
+		}
+		return soleInstance;
+	}
+	
+	private RodadaSorteioFactory(RodadaRepository repository, TemaRepository temaRepository, PalavraRepository palavraRepository) {
+		super(repository, temaRepository, palavraRepository);
+	}
 
-	        long id = getRodadaRepository().getProximoId();
-	        return Rodada.Criar(id,palavras.toArray(palavras.toArray(new Palavra[0])), jogador);
-	    }
-	    
+	@Override
+	public Rodada getRodada(Jogador jogador) {
+		Random random = new Random();
+        Tema temaEsolhido = super.getTemaRepository().getTodos()[random.nextInt((int)super.getTemaRepository().getProximoId()-1)];
+        int qtdPalavrasSorteadas = random.nextInt(3)+1;
+        Palavra[] palavrasTema = super.getPalavraRepository().getPorTema(temaEsolhido);
+        if(palavrasTema.length<qtdPalavrasSorteadas) {
+        	throw new RuntimeException("N�o h� palavras o sufuciente no tema sorteado");
+        }
+        Palavra[] palavrasEscolhidas = new Palavra[qtdPalavrasSorteadas];
+        for (int palavraAtual = 0; palavraAtual < qtdPalavrasSorteadas; palavraAtual++) {
+			Palavra palavraSorteada;
+        	do {
+        		palavraSorteada = palavrasTema[random.nextInt(palavrasTema.length)];
+
+        	}while(Arrays.asList(palavrasEscolhidas).contains(palavraSorteada));
+        	palavrasEscolhidas[palavraAtual] = palavraSorteada;
+		}
+
+        return Rodada.criar(getRodadaRepository().getProximoId(), palavrasEscolhidas, jogador);
+	}
+	
 }

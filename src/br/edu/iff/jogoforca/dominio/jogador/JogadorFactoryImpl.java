@@ -4,33 +4,32 @@ import br.edu.iff.factory.EntityFactory;
 
 public class JogadorFactoryImpl extends EntityFactory implements JogadorFactory {
 
-    private static JogadorFactoryImpl soleInstance;
+	private static JogadorFactoryImpl soleInstance;
+	
+	public static void createSoleInstance(JogadorRepository repository) {
+		if(soleInstance==null) {
+			soleInstance = new JogadorFactoryImpl(repository);
+		}
+	}
+	
+	public static JogadorFactoryImpl getSoleInstance() {
+		if(soleInstance==null) {
+			throw new RuntimeException("Precisa chamar o createSoleInstance primeiro.");
+		}
+		return soleInstance;
+	}
+	
+	private JogadorFactoryImpl(JogadorRepository repository) {
+		super(repository);
+	}
 
-    private JogadorFactoryImpl(JogadorRepository repository) {
-        super(repository);
-    }
-
-    public static void createSoleInstance(JogadorRepository repository) {
-        if (soleInstance == null) {
-            soleInstance = new JogadorFactoryImpl(repository);
-        }
-    }
-
-    public static JogadorFactoryImpl getSoleInstance() {
-        if (soleInstance == null) {
-            throw new IllegalStateException(); // sem utilizar o create primeiro
-        }
-
-        return soleInstance;
-    }
-
-    private JogadorRepository getJogadorRepository() {
+	private JogadorRepository getJogadorRepository() {
         return (JogadorRepository) this.getRepository();
     }
 
-    @Override
-    public Jogador getJogador(String nome) {
-        return Jogador.criar(this.getJogadorRepository().getProximoId(), nome);
-    }
-
+	@Override
+	public Jogador getJogador(String nome) {
+		return Jogador.criar(this.getJogadorRepository().getProximoId(), nome);
+	}
+	
 }

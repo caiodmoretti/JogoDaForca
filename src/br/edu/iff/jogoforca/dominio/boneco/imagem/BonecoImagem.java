@@ -19,7 +19,7 @@ public class BonecoImagem implements Boneco {
 	
 	@Override
 	public void exibir(Object contexto, int partes) {
-		// Método vazio (null)
+		//não precisa implementar exibir(), basta deixar os métodos vazios		
 	}
 	
 }

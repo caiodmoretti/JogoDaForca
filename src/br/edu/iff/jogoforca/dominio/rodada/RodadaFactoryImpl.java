@@ -4,20 +4,17 @@ import br.edu.iff.bancodepalavras.dominio.palavra.PalavraRepository;
 import br.edu.iff.bancodepalavras.dominio.tema.TemaRepository;
 import br.edu.iff.factory.EntityFactory;
 
-public abstract class RodadaFactoryImpl extends EntityFactory implements RodadaFactory{
-	
+public abstract class RodadaFactoryImpl extends EntityFactory implements RodadaFactory {
+
 	private TemaRepository temaRepository;
 	private PalavraRepository palavraRepository;
 
 	protected RodadaFactoryImpl(RodadaRepository repository, TemaRepository temaRepository, PalavraRepository palavraRepository) {
 		super(repository);
-		if(temaRepository == null || palavraRepository == null) {
-			throw new RuntimeException("Nenhum parâmetro pode ser nulo.");
-		}
 		this.temaRepository = temaRepository;
 		this.palavraRepository = palavraRepository;
 	}
-	
+
 	public RodadaRepository getRodadaRepository() {
 		return (RodadaRepository) this.getRepository();
 	}
@@ -28,6 +25,6 @@ public abstract class RodadaFactoryImpl extends EntityFactory implements RodadaF
 
 	public PalavraRepository getPalavraRepository() {
 		return this.palavraRepository;
-	}	
+	}
 
 }

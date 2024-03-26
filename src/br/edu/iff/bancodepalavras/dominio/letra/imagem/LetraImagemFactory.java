@@ -4,18 +4,14 @@ import br.edu.iff.bancodepalavras.dominio.letra.Letra;
 import br.edu.iff.bancodepalavras.dominio.letra.LetraFactoryImpl;
 
 public class LetraImagemFactory extends LetraFactoryImpl {
+
 	private static LetraImagemFactory soleInstance;
 	
-
-	
-	public static LetraImagemFactory getSoleInstace() {
+	public static LetraImagemFactory getSoleInstance() {
 		if(soleInstance==null) {
 			soleInstance = new LetraImagemFactory();
-			return soleInstance;
 		}
-		else {
-			return soleInstance;
-		}
+		return soleInstance;
 	}
 	
 	private LetraImagemFactory() {
@@ -24,13 +20,7 @@ public class LetraImagemFactory extends LetraFactoryImpl {
 	
 	@Override
 	protected Letra criarLetra(char codigo) {
-		return null;
-	}
-
-	@Override
-	public Letra getLetraEncoberta() {
-
-		return null;
+		return new LetraImagem(codigo);
 	}
 
 }

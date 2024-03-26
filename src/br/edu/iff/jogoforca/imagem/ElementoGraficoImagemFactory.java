@@ -6,33 +6,38 @@ import br.edu.iff.jogoforca.ElementoGraficoFactory;
 import br.edu.iff.jogoforca.dominio.boneco.Boneco;
 import br.edu.iff.jogoforca.dominio.boneco.imagem.BonecoImagemFactory;
 
+public class ElementoGraficoImagemFactory implements ElementoGraficoFactory {
 
-public class ElementoGraficoImagemFactory implements ElementoGraficoFactory   {
-
+	private LetraImagemFactory letraImagemFactory;
+	private BonecoImagemFactory bonecoImagemFactory;
+	
 	private static ElementoGraficoImagemFactory soleInstance;
 	
 	public static ElementoGraficoImagemFactory getSoleInstance() {
-		if(soleInstance == null) {
+		if(soleInstance==null) {
 			soleInstance = new ElementoGraficoImagemFactory();
-			return soleInstance;
 		}
-		else {
-			return soleInstance;
-		}
+		return soleInstance;
 	}
+	
+	private ElementoGraficoImagemFactory() {
+		this.letraImagemFactory = LetraImagemFactory.getSoleInstance();
+		this.bonecoImagemFactory = BonecoImagemFactory.getSoleInstance();
+	}
+
 	@Override
 	public Boneco getBoneco() {
-		return BonecoImagemFactory.getSoleInstance().getBoneco();
+		return this.bonecoImagemFactory.getBoneco();
 	}
 
 	@Override
 	public Letra getLetra(char codigo) {
-		return LetraImagemFactory.getSoleInstace().getLetra(codigo);
+		return this.letraImagemFactory.getLetra(codigo);
 	}
 
 	@Override
 	public Letra getLetraEncoberta() {
-		return LetraImagemFactory.getSoleInstace().getLetraEncoberta();
+		return this.letraImagemFactory.getLetraEncoberta();
 	}
-
+	
 }

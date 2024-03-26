@@ -1,29 +1,18 @@
 package br.edu.iff.jogoforca.dominio.rodada;
-/*A facade is a class that provides a simple interface to a complex subsystem which contains lots of moving parts. A facade might provide limited functionality in comparison to working with the subsystem directly. However, it includes only those features that clients really care about.
 
-Having a facade is handy when you need to integrate your app with a sophisticated library that has dozens of features, but you just need a tiny bit of its functionality.*/
 import br.edu.iff.jogoforca.dominio.jogador.Jogador;
+import br.edu.iff.jogoforca.dominio.jogador.JogadorNaoEncontradoException;
 import br.edu.iff.jogoforca.dominio.jogador.JogadorRepository;
 import br.edu.iff.repository.RepositoryException;
 
 public class RodadaAppService {
-	
 
 	private RodadaRepository rodadaRepository;
 	private JogadorRepository jogadorRepository;
 	private RodadaFactory rodadaFactory;
+	
 	private static RodadaAppService soleInstance;
 	
-	
-	private RodadaAppService(RodadaRepository rodadaRepository, JogadorRepository jogadorRepository, RodadaFactory rodadaFactory) {
-		if(rodadaFactory == null || jogadorRepository == null || rodadaFactory == null) {
-			throw new RuntimeException("Nenhum parâmetro pode ser nulo.");
-		}
-		this.rodadaRepository = rodadaRepository;
-		this.jogadorRepository = jogadorRepository;
-		this.rodadaFactory = rodadaFactory;
-	}
-
 	public static void createSoleInstance(RodadaRepository rodadaRepository, JogadorRepository jogadorRepository, RodadaFactory rodadaFactory) {
 		if(soleInstance==null) {
 			soleInstance = new RodadaAppService(rodadaRepository, jogadorRepository, rodadaFactory);
@@ -36,19 +25,27 @@ public class RodadaAppService {
 		}
 		return soleInstance;
 	}
-	//Foram implementas 3 formas de criar uma nova rodada: por idJogador, nomeJogador,  e Jogador
+	
+	private RodadaAppService(RodadaRepository rodadaRepository, JogadorRepository jogadorRepository, RodadaFactory rodadaFactory) {
+		this.rodadaRepository = rodadaRepository;
+		this.jogadorRepository = jogadorRepository;
+		this.rodadaFactory = rodadaFactory;
+	}
+	
 	public Rodada novaRodada(long idJogador) {
-		if(this.jogadorRepository.getPorId(idJogador) == null) {
-			throw new RuntimeException("O id informado tem que corresponder a um Jogador pré-existente no repositório de Jogador.");
+		if(this.jogadorRepository.getPorId(idJogador)==null) {
+			throw new RuntimeException("Tem que ser de um Jogador pré-existente no repositório de Jogador.");
 		}
 		return this.rodadaFactory.getRodada(this.jogadorRepository.getPorId(idJogador));
 	}
-	public Rodada novaRodada(String nomeJogador)  throws JogadorNaoEncontradoException {
-		if(this.jogadorRepository.getPorNome(nomeJogador) == null) {
+	
+	public Rodada novaRodada(String nomeJogador) throws JogadorNaoEncontradoException {
+		if(this.jogadorRepository.getPorNome(nomeJogador)==null) {
 			throw new JogadorNaoEncontradoException(nomeJogador);
 		}
 		return this.rodadaFactory.getRodada(this.jogadorRepository.getPorNome(nomeJogador)[0]);
 	}
+	
 	public Rodada novaRodada(Jogador jogador) {
 		return this.rodadaFactory.getRodada(jogador);
 	}
@@ -62,4 +59,5 @@ public class RodadaAppService {
 			return false;
 		}
 	}
+	
 }

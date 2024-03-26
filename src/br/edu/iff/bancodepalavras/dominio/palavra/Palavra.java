@@ -1,122 +1,148 @@
 package br.edu.iff.bancodepalavras.dominio.palavra;
-//importações
+
+import java.util.ArrayList;
 
 import br.edu.iff.bancodepalavras.dominio.letra.Letra;
 import br.edu.iff.bancodepalavras.dominio.letra.LetraFactory;
-
 import br.edu.iff.bancodepalavras.dominio.tema.Tema;
 import br.edu.iff.dominio.ObjetoDominioImpl;
-import java.util.ArrayList;
 
-import java.util.List;
+public class Palavra extends ObjetoDominioImpl {
 
-public class Palavra extends ObjetoDominioImpl{
-		
-		private Tema tema;
-		private Letra[] letras;
-		private Letra letraEncoberta;
-		public static LetraFactory factory;
+	private Tema tema;
+	private static LetraFactory letraFactory;
+	private Letra encoberta;
+	private Letra[] palavra;
 	
-		
-		
-		private Palavra(long id, String palavra, Tema tema) {
-	        super(id);
-	        if (factory != null){
-	            this.tema = tema;
-	            this.letraEncoberta = factory.getLetraEncoberta();
+	public static void setLetraFactory(LetraFactory factory) {
+		letraFactory = factory;
+	}
 	
-	            letras = new Letra[palavra.length()];
-	            for (int i = 0; i < palavra.length(); i++) {
-	                letras[i] = factory.getLetra(palavra.charAt(i)) ;
-	            }
+	public LetraFactory getLetraFactory() {
+		return letraFactory;
+	}
 	
-	        }else{
-	            throw new IllegalStateException("LetraFactory precisa ser iniciado para instanciar uma Palavra");
-	        }
-	    }
-			
-		public static Palavra criar(long id, String palavra, Tema tema){
-			return new Palavra(id, palavra, tema);
-			
+	public static Palavra criar(long id, String palavra, Tema tema) {
+		if(letraFactory==null) {
+			throw new RuntimeException("Deve inicializar o letraFactory primeiro");
 		}
-		
-		public Palavra reconstituir(long id, String palavra, Tema tema){
-			return new Palavra(id, palavra, tema);
+		return new Palavra(id, palavra, tema);
+	}
+	
+	public static Palavra reconstruir(long id, String palavra, Tema tema) {
+		if(letraFactory==null) {
+			throw new RuntimeException("Deve inicializar o letraFactory primeiro");
 		}
-			
-		public static void setLetraFactory(LetraFactory letraFactory){
-			Palavra.factory = letraFactory;
-		}	
-		public static LetraFactory getLetraFactory(){
-			return Palavra.factory;
+		return new Palavra(id, palavra, tema);
+	}
+	
+	private Palavra(long id, String palavra, Tema tema) {
+		super(id);
+		this.palavra = new Letra[palavra.length()];
+		for(int letraAtual = 0; letraAtual < palavra.length(); letraAtual++) {
+			this.palavra[letraAtual] = letraFactory.getLetra(palavra.charAt(letraAtual));
 		}
-		public Letra[] getLetras(){
-			return this.letras;
+		this.tema=tema;
+		this.encoberta = letraFactory.getLetraEncoberta();
+	}
+	
+	public Letra[] getLetras() {
+		if(this.palavra==null) {
+			throw new RuntimeException("Deve inicializar a palavra primeiro");
 		}
-		
-		public Letra getLetra(int posicao){
-			return this.letras[posicao];
+		return this.palavra.clone();
+	}
+
+	public Letra getLetra(int posicao) {
+		if(this.palavra==null) {
+			throw new RuntimeException("Deve inicializar a palavra primeiro");
 		}
-		
-		public void exibir(Object contexto){
-			for(int i = 0; i<= this.letras.length-1;i++){
-				this.letras[i].exibir(contexto);
+		if(posicao<0||posicao>getTamanho()) {
+			throw new RuntimeException("Posição inválida");
+		}
+		return this.palavra[posicao];
+	}
+	
+	public void exibir(Object contexto) {
+		if(this.palavra==null) {
+			throw new RuntimeException("Deve inicializar a palavra primeiro");
+		}
+		for(int posicaoAtual = 0; posicaoAtual < this.getTamanho(); posicaoAtual++) {
+			this.palavra[posicaoAtual].exibir(contexto);
+		}
+	}
+	
+	public void exibir(Object contexto, boolean[] posicoes) {
+		if(this.palavra==null) {
+			throw new RuntimeException("Deve inicializar a palavra primeiro");
+		}
+		for(int posicaoAtual = 0; posicaoAtual < this.getTamanho(); posicaoAtual++) {
+			if(posicoes[posicaoAtual]) {				
+				this.palavra[posicaoAtual].exibir(contexto);
+			}else {
+				this.encoberta.exibir(contexto);
 			}
 		}
-		
+	}
 	
-	    public void exibir(Object contexto, boolean[] posicoes){
-	        for (int i = 0; i < posicoes.length; i++) {
-	            if(posicoes[i]==true){
-	                letras[i].exibir(contexto);
-	            }else{
-	                letraEncoberta.exibir(contexto);
-	            }
-	        }
-	    }
-	    
-	    
-	    public int[] tentar(char codigo){
-	        List<Integer> listaPosicoes = new ArrayList<>();
-	        for (int i = 0; i < this.letras.length; i++) {
-	            if (this.letras[i].getCodigo() == codigo){
-	                listaPosicoes.add(i);
-	            	}
-	        	}      
-	        // criar um array de inteiros com o mesmo tamanho da lista
-	        int[] arrayPosicoes = new int[listaPosicoes.size()];
-	
-	        // preencher o array com os elementos da lista
-	        for (int i = 0; i < listaPosicoes.size(); i++) {
-	            arrayPosicoes[i] = listaPosicoes.get(i);
-	        }
-	        	return  arrayPosicoes;    
-	    }
-	        
-	    public Tema getTema(){
-	    	return this.tema;
-	    }
-	
-	    public boolean comparar(String palavra){
-			if (palavra == this.toString())
-				return true;
-			else return false;
+	public int[] tentar(char codigo) {
+		if(this.palavra==null) {
+			throw new RuntimeException("Deve inicializar a palavra primeiro");
 		}
-	    
-	    
-	    public int getTamanho(){
-	        return letras.length;
-	    }
-	    
-	    
-	    
-	    public String toString(){
-			String palavraToString = "";
-			for (int i = 0; i<= this.letras.length-1;i++){	 
-				palavraToString = palavraToString + this.letras[i];
-				i++;
-			}			
-			return palavraToString;
+		ArrayList<Integer> posicoesEncontradasLista = new ArrayList<Integer>();
+		for(int posicaoAtual = 0; posicaoAtual<this.getTamanho(); posicaoAtual++) {
+			if(this.palavra[posicaoAtual].getCodigo()==codigo) {
+				posicoesEncontradasLista.add(posicaoAtual);
+			}
 		}
+		/*
+		int[] posicoesEncontradasVetor = new int[posicoesEncontradasLista.size()];
+		for(int posicaoAtual = 0; posicaoAtual<posicoesEncontradasLista.size(); posicaoAtual++) {
+			posicoesEncontradasVetor[posicaoAtual] = posicoesEncontradasLista.get(posicaoAtual);
+		}
+		*/
+		return posicoesEncontradasLista.stream().mapToInt(Integer::intValue).toArray();
+	}
+	
+	public Tema getTema() {
+		return tema;
+	}
 
+	public boolean comparar(String palavra) {
+		if(this.palavra==null) {
+			throw new RuntimeException("Deve inicializar a palavra primeiro");
+		}
+		if(palavra==null) {
+			return false;
+		}
+		if(this.getTamanho()!=palavra.length()) {
+			return false;
+		}
+		for(int posicaoAtual = 0; posicaoAtual<this.getTamanho(); posicaoAtual++) {
+			if(this.palavra[posicaoAtual].getCodigo()!=palavra.charAt(posicaoAtual)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public int getTamanho() {
+		if(this.palavra==null) {
+			throw new RuntimeException("Deve inicializar a palavra primeiro");
+		}
+		return this.palavra.length;
+	}
+	
+	@Override
+	public String toString() {
+		if(this.palavra==null) {
+			throw new RuntimeException("Deve inicializar a palavra primeiro");
+		}
+		String palavra = "";
+		for(int posicaoAtual = 0; posicaoAtual<this.getTamanho(); posicaoAtual++) {
+			palavra+=this.palavra[posicaoAtual].getCodigo();
+		}
+		return palavra;
+	}
+	
 }
